@@ -20,7 +20,6 @@ class AppRequest(BaseModel):
     hwid: str
 
 # --- التصميم الفخم المشترك (CSS) ---
-# هذا الجزء مسؤول عن الألوان، الخطوط، والزجاج الشفاف
 CSS_STYLE = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
@@ -34,7 +33,7 @@ CSS_STYLE = """
     .circle-2 { width: 300px; height: 300px; background: #4facfe; bottom: -50px; right: -50px; }
 
     /* التصميم الزجاجي */
-    .glass-panel { background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; }
+    .glass-panel { background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 30px; width: 100%; max-width: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; }
     .title { font-size: 28px; font-weight: 900; text-align: center; background: linear-gradient(90deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; letter-spacing: 2px; }
     
     /* الحقول والأزرار */
@@ -51,7 +50,7 @@ CSS_STYLE = """
     tr:hover td { background: rgba(255,255,255,0.03); }
     
     /* أزرار التحكم */
-    .action-btn { padding: 6px 10px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; margin: 0 2px; display: inline-block; }
+    .action-btn { padding: 6px 10px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; margin: 0 2px; display: inline-block; border:none; cursor:pointer;}
     .btn-extend { background: rgba(0, 242, 254, 0.2); color: #00f2fe; border: 1px solid #00f2fe; }
     .btn-toggle { background: rgba(255, 165, 0, 0.2); color: orange; border: 1px solid orange; }
     .btn-delete { background: rgba(255, 0, 0, 0.2); color: red; border: 1px solid red; }
@@ -71,10 +70,10 @@ CSS_STYLE = """
 @app.get("/", response_class=HTMLResponse)
 def login_page():
     return f"""
-    <html dir="rtl"><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ADHEMXAYOUB</title>{CSS_STYLE}</head>
+    <html dir="rtl"><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>DARK VIP</title>{CSS_STYLE}</head>
     <body style="justify-content: center; height: 100vh;">
         <div class="glass-panel" style="max-width: 400px;">
-            <div class="title">ADHEMXAYOUB</div>
+            <div class="title">DARK VIP</div>
             <p style="text-align:center; color:#aaa; margin-bottom: 20px;">لوحة التحكم الفخمة</p>
             <form action="/dashboard" method="get">
                 <input type="password" name="password" placeholder="أدخل كلمة السر 🔐" required>
@@ -94,7 +93,6 @@ def dashboard(password: str = ""):
     c.execute("SELECT key, hwid, expiry, active FROM keys ORDER BY expiry DESC")
     rows = c.fetchall()
     
-    # إحصائيات سريعة
     total_keys = len(rows)
     active_keys = sum(1 for r in rows if r[3] == 1 and datetime.datetime.now() <= datetime.datetime.strptime(r[2], "%Y-%m-%d %H:%M:%S"))
     conn.close()
@@ -111,6 +109,7 @@ def dashboard(password: str = ""):
             
         device = hwid[:6] + "..." if hwid else "غير مربوط 📱"
         
+        # تم إضافة حقل مخصص لزيادة الساعات
         table_rows += f"""
         <tr>
             <td style="color:#00f2fe; font-weight:bold;">{key}</td>
@@ -118,9 +117,13 @@ def dashboard(password: str = ""):
             <td style="color:#aaa; font-size:11px;">{expiry}</td>
             <td style="color:#aaa; font-size:11px;">{device}</td>
             <td>
-                <a href="/extend/{key}?password={password}" class="action-btn btn-extend">➕ يوم</a>
-                <a href="/toggle/{key}?password={password}" class="action-btn btn-toggle">🚫 تبديل</a>
-                <a href="/delete/{key}?password={password}" class="action-btn btn-delete" onclick="return confirm('هل أنت متأكد من الحذف؟')">🗑️ حذف</a>
+                <form action="/extend/{key}" method="get" style="display:inline-flex; align-items:center; gap:5px;">
+                    <input type="hidden" name="password" value="{password}">
+                    <input type="number" name="hours" value="24" style="width:60px; padding:5px; margin:0; font-size:12px; text-align:center;" title="عدد الساعات">
+                    <button type="submit" class="action-btn btn-extend" style="padding:7px;">➕ إضافة ساعات</button>
+                </form>
+                <a href="/toggle/{key}?password={password}" class="action-btn btn-toggle" style="padding:8px;">🚫 تعطيل</a>
+                <a href="/delete/{key}?password={password}" class="action-btn btn-delete" style="padding:8px;" onclick="return confirm('هل أنت متأكد من الحذف؟')">🗑️ حذف</a>
             </td>
         </tr>
         """
@@ -132,16 +135,14 @@ def dashboard(password: str = ""):
         options += f'<option value="{val}">{label}</option>'
 
     return f"""
-    <html dir="rtl"><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ADHEMXAYOUB</title>{CSS_STYLE}</head>
+    <html dir="rtl"><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>DARK VIP</title>{CSS_STYLE}</head>
     <body>
-        <!-- الشريط العلوي -->
-        <div style="width:100%; max-width:900px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h1 class="title" style="margin:0;">ADHEMXAYOUB VIP</h1>
+        <div style="width:100%; max-width:1000px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h1 class="title" style="margin:0;">DARK VIP GZNZRATEUR CODE</h1>
             <a href="/" style="color:red; text-decoration:none; font-weight:bold;">تسجيل خروج 🚪</a>
         </div>
 
-        <!-- لوحة الإحصائيات -->
-        <div style="display:flex; gap:15px; width:100%; max-width:900px; margin-bottom:20px;">
+        <div style="display:flex; gap:15px; width:100%; max-width:1000px; margin-bottom:20px;">
             <div class="glass-panel" style="flex:1; text-align:center; padding:15px; margin-bottom:0;">
                 <h3 style="color:#aaa; font-size:14px;">إجمالي الأكواد</h3>
                 <p style="font-size:24px; font-weight:bold; color:#fff;">{total_keys}</p>
@@ -157,11 +158,12 @@ def dashboard(password: str = ""):
             <h3 style="color:#fff; margin-bottom:15px; font-size:16px;">✨ توليد أكواد جديدة</h3>
             <form action="/generate" method="post" style="display:flex; gap:10px; flex-wrap:wrap;">
                 <input type="hidden" name="password" value="{password}">
-                <select name="duration" style="flex:2; min-width:150px; margin-bottom:0;">
+                <select name="duration" style="flex:1; min-width:120px; margin-bottom:0;">
                     {options}
                 </select>
-                <input type="number" name="amount" value="1" min="1" max="100" style="flex:1; min-width:80px; text-align:center; margin-bottom:0;" placeholder="الكمية">
-                <button type="submit" style="flex:1; min-width:120px;">توليد الأكواد 🚀</button>
+                <input type="number" name="custom_hours" placeholder="ساعات مخصصة (اختياري)" style="flex:1; min-width:120px; margin-bottom:0;">
+                <input type="number" name="amount" value="1" min="1" max="100" style="flex:0.5; min-width:80px; text-align:center; margin-bottom:0;" placeholder="الكمية">
+                <button type="submit" style="flex:1; min-width:120px;">توليد 🚀</button>
             </form>
         </div>
 
@@ -189,17 +191,23 @@ def dashboard(password: str = ""):
 
 # --- مسارات التحكم (توليد، حذف، تعطيل، زيادة) ---
 @app.post("/generate", response_class=HTMLResponse)
-def generate_web(password: str = Form(...), duration: str = Form(...), amount: int = Form(...)):
+def generate_web(password: str = Form(...), duration: str = Form(...), custom_hours: int = Form(0), amount: int = Form(...)):
     if password != ADMIN_PASSWORD: return "<h2>❌ غير مصرح لك</h2>"
     now = datetime.datetime.now()
-    if duration == "1h": expiry = now + datetime.timedelta(hours=1)
-    elif duration == "3h": expiry = now + datetime.timedelta(hours=3)
-    elif duration == "7h": expiry = now + datetime.timedelta(hours=7)
-    elif duration == "12h": expiry = now + datetime.timedelta(hours=12)
-    elif duration == "24h": expiry = now + datetime.timedelta(days=1)
-    elif duration == "2d": expiry = now + datetime.timedelta(days=2)
-    elif duration == "3d": expiry = now + datetime.timedelta(days=3)
-    else: expiry = now + datetime.timedelta(days=7)
+    
+    # إذا تم إدخال ساعات مخصصة، يتم تجاهل القائمة
+    if custom_hours > 0:
+        expiry = now + datetime.timedelta(hours=custom_hours)
+    else:
+        if duration == "1h": expiry = now + datetime.timedelta(hours=1)
+        elif duration == "3h": expiry = now + datetime.timedelta(hours=3)
+        elif duration == "7h": expiry = now + datetime.timedelta(hours=7)
+        elif duration == "12h": expiry = now + datetime.timedelta(hours=12)
+        elif duration == "24h": expiry = now + datetime.timedelta(days=1)
+        elif duration == "2d": expiry = now + datetime.timedelta(days=2)
+        elif duration == "3d": expiry = now + datetime.timedelta(days=3)
+        else: expiry = now + datetime.timedelta(days=7)
+        
     expiry_str = expiry.strftime("%Y-%m-%d %H:%M:%S")
     
     conn = sqlite3.connect(DB_PATH)
@@ -229,14 +237,15 @@ def toggle_key(key: str, password: str):
     return RedirectResponse(url=f"/dashboard?password={password}", status_code=303)
 
 @app.get("/extend/{key}")
-def extend_key(key: str, password: str):
+def extend_key(key: str, password: str, hours: int = 24):
     if password != ADMIN_PASSWORD: return "غير مصرح"
     conn = sqlite3.connect(DB_PATH); c = conn.cursor()
     c.execute("SELECT expiry FROM keys WHERE key=?", (key,))
     row = c.fetchone()
     if row:
         current_expiry = datetime.datetime.strptime(row[0], "%Y-%m-%d %H:%M:%S")
-        new_expiry = current_expiry + datetime.timedelta(days=1)
+        # إضافة عدد الساعات المطلوبة
+        new_expiry = current_expiry + datetime.timedelta(hours=hours)
         c.execute("UPDATE keys SET expiry=? WHERE key=?", (new_expiry.strftime("%Y-%m-%d %H:%M:%S"), key)); conn.commit()
     conn.close()
     return RedirectResponse(url=f"/dashboard?password={password}", status_code=303)
