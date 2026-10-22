@@ -4,233 +4,627 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DARK VIP | لوحة التحكم</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-:root{--bg:#050508;--cy:#00f2fe;--vi:#4facfe;--ok:#00e676;--warn:#ffb300;--bad:#ff1744;--tx:#f0f0f5;--mut:#8b93a7}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden}
-body::before{content:"";position:fixed;inset:0;z-index:-2;background:
- linear-gradient(rgba(0,242,254,0.03) 1px, transparent 1px),
- linear-gradient(90deg, rgba(0,242,254,0.03) 1px, transparent 1px);
- background-size: 30px 30px; pointer-events:none}
-body::after{content:"";position:fixed;inset:0;z-index:-1;background:
- radial-gradient(circle at 80% 10%, rgba(0,242,254,0.15) 0%, transparent 40%),
- radial-gradient(circle at 20% 90%, rgba(79,172,254,0.15) 0%, transparent 40%)}
-.glass{background:rgba(15,15,20,0.6);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:20px;box-shadow: 0 10px 30px rgba(0,0,0,0.5)}
-.neon-text{background: linear-gradient(90deg, var(--cy), var(--vi));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: 800}
-.mono{font-family:'JetBrains Mono',monospace;direction:ltr;unicode-bidi:isolate}
-button,input,select{font:inherit;color:inherit;outline:none}
-.btn{border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);border-radius:12px;padding:.6rem 1rem;cursor:pointer;transition:all .2s;white-space:nowrap;font-weight:600}
-.btn:hover{background:rgba(255,255,255,0.1);transform:translateY(-1px)}
-.btn.primary{background:linear-gradient(135deg,var(--cy),var(--vi));color:#000;border:none;box-shadow:0 0 15px rgba(0,242,254,0.4)}
-.btn.primary:hover{box-shadow:0 0 25px rgba(0,242,254,0.7)}
-.btn.bad{border-color:rgba(255,23,68,0.3);color:var(--bad)}
-.btn.bad:hover{background:rgba(255,23,68,0.1);border-color:var(--bad)}
-.chip{border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:.5rem 1.2rem;cursor:pointer;background:transparent;transition:all .2s;font-weight:600;font-size:0.9rem}
-.chip[aria-pressed=true]{background:rgba(0,242,254,0.1);border-color:var(--cy);color:var(--cy);box-shadow:0 0 15px rgba(0,242,254,0.2)}
-.inp{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:.7rem 1rem;width:100%;transition:border .2s}
-.inp:focus{border-color:var(--cy);box-shadow:0 0 10px rgba(0,242,254,0.1)}
-.stat{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:1.2rem;position:relative;overflow:hidden}
-.stat::before{content:"";position:absolute;top:0;right:0;width:4px;height:100%;background:var(--c,var(--cy))}
-.stat b{font-size:2rem;font-weight:800;display:block;line-height:1.2;color:var(--tx)}
-.stat span{color:var(--mut);font-size:.9rem;font-weight:600}
-.row,.thead{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:1.2rem}
-.row{border-top:1px solid rgba(255,255,255,0.05);border-inline-start:4px solid var(--idle);transition:all .2s}
-.row:hover{background:rgba(255,255,255,0.02)}
-.row[data-s=active]{border-inline-start-color:var(--ok)}
-.row[data-s=expired]{border-inline-start-color:var(--warn)}
-.row[data-s=disabled]{border-inline-start-color:var(--bad)}
-.k,.acts{grid-column:1/-1}
-.acts{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:0.5rem}
-.lbl{display:block;color:var(--mut);font-size:.8rem;margin-bottom:.2rem;font-weight:600}
-.thead{display:none;color:var(--mut);font-size:.9rem;font-weight:800;background:rgba(0,0,0,0.3);border-bottom:1px solid rgba(255,255,255,0.05)}
-.key-btn{background:rgba(0,242,254,0.05);border:1px dashed rgba(0,242,254,0.3);border-radius:8px;padding:.4rem .8rem;cursor:pointer;font-size:.95rem;letter-spacing:.05em;color:var(--cy);transition:all .2s}
-.key-btn:hover{background:rgba(0,242,254,0.15);border-style:solid}
-.pill{display:inline-block;padding:.2rem .8rem;border-radius:999px;font-size:.8rem;font-weight:800;border:1px solid currentColor;box-shadow:0 0 10px currentColor}
-.p-active{color:var(--ok);background:rgba(0,230,118,0.1)}.p-unused{color:var(--idle);background:rgba(139,147,167,0.1)}
-.p-expired{color:var(--warn);background:rgba(255,179,0,0.1)}.p-disabled{color:var(--bad);background:rgba(255,23,68,0.1)}
-@media(min-width:768px){
- .row,.thead{grid-template-columns:2.5fr 1fr 1.5fr 1.5fr auto;align-items:center}
- .thead{display:grid}.k,.acts{grid-column:auto}.row .lbl{display:none}.acts{margin-top:0}
-}
-#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);padding:.8rem 2rem;z-index:50;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(0.68, -0.55, 0.265, 1.55);background:rgba(0,242,254,0.1);border:1px solid var(--cy);border-radius:999px;color:var(--cy);font-weight:800;box-shadow:0 0 20px rgba(0,242,254,0.3)}
-#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-#login{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(5,5,8,0.9);backdrop-filter:blur(10px)}
+    :root {
+        --bg-base: #050508;
+        --glass-bg: rgba(18, 20, 30, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --neon-cyan: #00f2fe;
+        --neon-blue: #4facfe;
+        --neon-purple: #a35cff;
+        --text-main: #f0f0f5;
+        --text-muted: #8b93a7;
+        --success: #00e676;
+        --warning: #ffb300;
+        --danger: #ff1744;
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+        margin: 0;
+        background-color: var(--bg-base);
+        color: var(--text-main);
+        font-family: 'Cairo', sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
+
+    .bg-glow {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        overflow: hidden;
+        background: 
+            radial-gradient(circle at 10% 10%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
+            radial-gradient(circle at 90% 90%, rgba(163, 92, 255, 0.08) 0%, transparent 40%),
+            radial-gradient(circle at 50% 50%, rgba(79, 172, 254, 0.03) 0%, transparent 60%);
+    }
+
+    .glass {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .neon-text {
+        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue), var(--neon-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .input-field {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 14px 16px;
+        color: white;
+        font-family: 'Cairo', sans-serif;
+        transition: all 0.3s ease;
+    }
+    .input-field:focus {
+        outline: none;
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.15);
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .btn {
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+        color: #000;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(0, 242, 254, 0.6);
+    }
+    .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    .btn-outline {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: var(--text-main);
+    }
+    .btn-outline:hover {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.3);
+    }
+    .btn-danger {
+        background: rgba(255, 23, 68, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(255, 23, 68, 0.3);
+    }
+    .btn-danger:hover {
+        background: rgba(255, 23, 68, 0.2);
+        border-color: var(--danger);
+    }
+    .btn-icon {
+        padding: 8px;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .chip {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        color: var(--text-muted);
+        padding: 8px 20px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 600;
+    }
+    .chip:hover {
+        background: rgba(255,255,255,0.08);
+    }
+    .chip.active {
+        background: rgba(0, 242, 254, 0.1);
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+
+    .badge {
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 800;
+        border: 1px solid;
+    }
+    .badge-active { color: var(--success); background: rgba(0, 230, 118, 0.1); border-color: rgba(0, 230, 118, 0.3); }
+    .badge-unused { color: var(--text-muted); background: rgba(139, 147, 167, 0.1); border-color: rgba(139, 147, 167, 0.3); }
+    .badge-expired { color: var(--warning); background: rgba(255, 179, 0, 0.1); border-color: rgba(255, 179, 0, 0.3); }
+    .badge-disabled { color: var(--danger); background: rgba(255, 23, 68, 0.1); border-color: rgba(255, 23, 68, 0.3); }
+
+    .table-header {
+        display: none;
+        grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1.5fr;
+        padding: 16px 24px;
+        background: rgba(0,0,0,0.2);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        color: var(--text-muted);
+        font-weight: 800;
+        font-size: 14px;
+        border-radius: 24px 24px 0 0;
+    }
+    .key-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 24px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        transition: background 0.2s ease;
+        align-items: center;
+    }
+    .key-row:hover {
+        background: rgba(255,255,255,0.02);
+    }
+    .key-row:last-child {
+        border-bottom: none;
+        border-radius: 0 0 24px 24px;
+    }
+    
+    @media (min-width: 768px) {
+        .table-header { display: grid; }
+        .key-row { grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1.5fr; }
+        .mobile-label { display: none !important; }
+    }
+
+    .mobile-label {
+        display: block;
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .mono {
+        font-family: 'JetBrains Mono', monospace;
+        direction: ltr;
+        unicode-bidi: embed;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade { animation: fadeIn 0.4s ease forwards; }
+
+    #toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: rgba(18, 20, 30, 0.9);
+        border: 1px solid var(--neon-cyan);
+        color: var(--neon-cyan);
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 800;
+        backdrop-filter: blur(10px);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        z-index: 9999;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+    }
+    #toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    #loginScreen {
+        position: fixed;
+        inset: 0;
+        z-index: 9000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-base);
+        padding: 20px;
+    }
 </style>
 </head>
 <body>
 
-<div id="login">
-  <form id="loginForm" class="glass p-8 w-full max-w-sm space-y-5 relative overflow-hidden">
-    <div style="position:absolute;top:0;left:0;width:100%;height:4px;background:linear-gradient(90deg,var(--cy),var(--vi))"></div>
-    <h2 class="text-3xl neon-text text-center mb-6">DARK VIP</h2>
-    <p class="text-center text-sm mb-4" style="color:var(--mut)">لوحة التحكم المركزية</p>
-    <input id="tok" type="password" class="inp mono text-center" placeholder="ADMIN_TOKEN" autocomplete="current-password" required>
-    <p id="loginErr" class="text-sm text-center" style="color:var(--bad); font-weight:700"></p>
-    <button class="btn primary w-full text-lg">دخول آمن 🚀</button>
-  </form>
+<div class="bg-glow"></div>
+<div id="toast"></div>
+
+<!-- Login Screen -->
+<div id="loginScreen">
+    <div class="glass p-8 md:p-12 w-full max-w-md relative overflow-hidden animate-fade text-center">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));"></div>
+        
+        <div class="mb-10">
+            <h1 class="text-4xl font-black neon-text mb-2 tracking-widest">DARK VIP</h1>
+            <p class="text-sm font-bold" style="color: var(--text-muted)">لوحة التحكم المركزية</p>
+        </div>
+
+        <form id="loginForm" class="space-y-6">
+            <div class="relative">
+                <input type="password" id="tokenInput" class="input-field mono text-center text-lg" placeholder="أدخل كلمة المرور (Token)" required autocomplete="current-password">
+            </div>
+            <p id="loginError" class="text-sm font-bold text-red-500 h-4"></p>
+            <button type="submit" class="btn btn-primary w-full text-lg">دخول آمن 🚀</button>
+        </form>
+        
+        <div class="mt-8 text-xs font-bold" style="color: var(--text-muted)">
+            Powered by Ayoub VIP System
+        </div>
+    </div>
 </div>
 
-<main class="max-w-6xl mx-auto p-4 md:p-8 space-y-6">
-  <header class="flex items-center justify-between gap-3 glass p-4">
-    <div class="flex items-center gap-3">
-        <div style="width:12px;height:12px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok)"></div>
-        <h1 class="text-2xl md:text-3xl neon-text">DARK VIP GZNZRATEUR</h1>
-    </div>
-    <div class="flex gap-2">
-      <button class="btn" id="refresh">🔄 تحديث</button>
-      <button class="btn bad" id="logout">🚪 خروج</button>
-    </div>
-  </header>
+<!-- Dashboard -->
+<main id="dashboard" class="max-w-6xl mx-auto p-4 md:p-8 hidden animate-fade">
+    
+    <header class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full glass flex items-center justify-center text-2xl">👑</div>
+            <div>
+                <h1 class="text-2xl font-black neon-text">DARK VIP GZNZRATEUR</h1>
+                <div class="flex items-center gap-2 text-xs font-bold mt-1" style="color: var(--success)">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> متصل بالسيرفر
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-2 w-full md:w-auto">
+            <button class="btn btn-outline flex-1 md:flex-none" id="refreshBtn">تحديث 🔄</button>
+            <button class="btn btn-danger flex-1 md:flex-none" id="logoutBtn">خروج 🚪</button>
+        </div>
+    </header>
 
-  <section class="grid grid-cols-2 md:grid-cols-4 gap-4" id="stats"></section>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="glass p-6 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-1 h-full bg-[var(--neon-cyan)] group-hover:w-2 transition-all"></div>
+            <p class="text-sm font-bold mb-1" style="color: var(--text-muted)">إجمالي الأكواد</p>
+            <h3 class="text-4xl font-black" id="statTotal">0</h3>
+        </div>
+        <div class="glass p-6 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-1 h-full bg-[var(--success)] group-hover:w-2 transition-all"></div>
+            <p class="text-sm font-bold mb-1" style="color: var(--text-muted)">أكواد نشطة</p>
+            <h3 class="text-4xl font-black" id="statActive">0</h3>
+        </div>
+        <div class="glass p-6 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-1 h-full bg-[var(--text-muted)] group-hover:w-2 transition-all"></div>
+            <p class="text-sm font-bold mb-1" style="color: var(--text-muted)">غير مفعّلة</p>
+            <h3 class="text-4xl font-black" id="statUnused">0</h3>
+        </div>
+        <div class="glass p-6 relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-1 h-full bg-[var(--danger)] group-hover:w-2 transition-all"></div>
+            <p class="text-sm font-bold mb-1" style="color: var(--text-muted)">منتهية / معطّلة</p>
+            <h3 class="text-4xl font-black" id="statDead">0</h3>
+        </div>
+    </div>
 
-  <section class="glass p-6 space-y-5 relative overflow-hidden">
-    <div style="position:absolute;top:0;right:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--cy),transparent);opacity:0.5"></div>
-    <h2 class="text-xl font-bold flex items-center gap-2"><span>✨</span> توليد أكواد جديدة</h2>
-    <div class="flex flex-wrap gap-2" id="chips">
-      <button class="chip" data-s="3600" aria-pressed="true">ساعة ⏱️</button>
-      <button class="chip" data-s="10800" aria-pressed="false">3 ساعات ⏱️</button>
-      <button class="chip" data-s="86400" aria-pressed="false">يوم 📅</button>
-      <button class="chip" data-s="604800" aria-pressed="false">أسبوع 📆</button>
-      <button class="chip" data-s="custom" aria-pressed="false">مخصص ⚙️</button>
-    </div>
-    <div id="customBox" class="hidden grid grid-cols-2 gap-3 max-w-sm">
-      <input id="cVal" type="number" min="1" value="2" class="inp" aria-label="المدة">
-      <select id="cUnit" class="inp" aria-label="الوحدة">
-        <option value="60">دقائق</option><option value="3600" selected>ساعات</option><option value="86400">أيام</option>
-      </select>
-    </div>
-    <div class="flex flex-wrap items-end gap-4 bg-black/20 p-4 rounded-xl border border-white/5">
-      <label class="block w-32"><span class="lbl">الكمية (1–100)</span>
-        <input id="qty" type="number" min="1" max="100" value="1" class="inp mono text-center text-lg font-bold"></label>
-      <button class="btn primary flex-1 text-lg" id="gen">توليد الأكواد 🚀</button>
-    </div>
-    <div id="result" class="hidden space-y-3 bg-black/30 p-4 rounded-xl border border-var(--cy)">
-      <div class="flex items-center justify-between"><span class="lbl" style="margin:0; color:var(--cy)">الأكواد الجديدة جاهزة</span>
-        <button class="btn" id="copyAll">📋 نسخ الكل</button></div>
-      <pre id="resultTxt" class="mono inp text-sm overflow-auto max-h-48 m-0 leading-relaxed text-[var(--cy)] bg-black/50"></pre>
-    </div>
-  </section>
+    <div class="glass p-6 md:p-8 mb-8">
+        <h2 class="text-xl font-black mb-6 flex items-center gap-2"><span>✨</span> توليد أكواد جديدة</h2>
+        
+        <div class="flex flex-wrap gap-3 mb-6" id="chips">
+            <button class="chip active" data-s="3600">ساعة ⏱️</button>
+            <button class="chip" data-s="10800">3 ساعات ⏱️</button>
+            <button class="chip" data-s="86400">يوم 📅</button>
+            <button class="chip" data-s="604800">أسبوع 📆</button>
+            <button class="chip" data-s="custom">مخصص ⚙️</button>
+        </div>
 
-  <section class="glass overflow-hidden">
-    <div class="p-4 flex flex-col sm:flex-row gap-3 bg-black/20 border-b border-white/5">
-      <input id="q" class="inp mono" placeholder="🔍 بحث بالكود أو HWID" style="direction:ltr">
-      <select id="f" class="inp sm:max-w-[12rem]">
-        <option value="">كل الحالات</option><option value="active">نشط</option><option value="unused">غير مفعّل</option>
-        <option value="expired">منتهي</option><option value="disabled">معطّل</option>
-      </select>
+        <div id="customInputs" class="hidden grid grid-cols-2 gap-4 max-w-sm mb-6">
+            <div>
+                <label class="block text-xs font-bold mb-1" style="color:var(--text-muted)">المدة</label>
+                <input type="number" id="cVal" value="2" min="1" class="input-field text-center">
+            </div>
+            <div>
+                <label class="block text-xs font-bold mb-1" style="color:var(--text-muted)">الوحدة</label>
+                <select id="cUnit" class="input-field text-center">
+                    <option value="60">دقيقة</option>
+                    <option value="3600" selected>ساعة</option>
+                    <option value="86400">يوم</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row items-end gap-4">
+            <div class="w-full md:w-48">
+                <label class="block text-xs font-bold mb-1" style="color:var(--text-muted)">الكمية (1-100)</label>
+                <input type="number" id="qtyInput" value="1" min="1" max="100" class="input-field mono text-center text-lg font-bold">
+            </div>
+            <button class="btn btn-primary flex-1 w-full text-lg py-4" id="generateBtn">توليد الأكواد 🚀</button>
+        </div>
+
+        <div id="resultBox" class="hidden mt-6 p-4 rounded-xl border border-[var(--neon-cyan)] bg-[rgba(0,242,254,0.05)]">
+            <div class="flex justify-between items-center mb-3">
+                <h4 class="text-sm font-bold text-[var(--neon-cyan)]">الأكواد الجديدة جاهزة</h4>
+                <button class="btn btn-outline text-xs" id="copyAllBtn">📋 نسخ الكل</button>
+            </div>
+            <pre id="resultText" class="mono text-sm text-center text-[var(--neon-cyan)] bg-black/40 p-4 rounded-lg overflow-auto max-h-48 whitespace-pre-wrap"></pre>
+        </div>
     </div>
-    <div class="thead"><div>الكود</div><div>الحالة</div><div>ينتهي في</div><div>الجهاز (HWID)</div><div>تحكم</div></div>
-    <div id="list"></div>
-  </section>
+
+    <div class="glass overflow-hidden">
+        <div class="p-4 flex flex-col md:flex-row gap-4 bg-black/20 border-b border-white/5">
+            <input type="text" id="searchInput" class="input-field flex-1" placeholder="🔍 بحث بالكود أو HWID...">
+            <select id="filterInput" class="input-field w-full md:w-48">
+                <option value="">كل الحالات</option>
+                <option value="active">نشط</option>
+                <option value="unused">غير مفعّل</option>
+                <option value="expired">منتهي</option>
+                <option value="disabled">معطّل</option>
+            </select>
+        </div>
+        
+        <div class="table-header">
+            <div>الكود</div>
+            <div>الحالة</div>
+            <div>ينتهي في</div>
+            <div>الجهاز (HWID)</div>
+            <div class="text-left">التحكم</div>
+        </div>
+        
+        <div id="keysList"></div>
+    </div>
+
 </main>
-
-<div id="toast" class="glass"></div>
 
 <script>
 const $ = s => document.querySelector(s);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let TOKEN = '', KEYS = [], DUR = 3600;
-try { TOKEN = localStorage.getItem('adm') || ''; } catch (e) {}
 
-const ST = {active:'نشط', unused:'غير مفعّل', expired:'منتهي', disabled:'معطّل'};
-
-function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('on'),2500); }
-function showLogin(err){ $('#login').style.display='flex'; $('#loginErr').textContent=err||''; $('#tok').focus(); }
-
-async function api(path, method='GET', body){
-  const r = await fetch(path, {method, headers:{'Content-Type':'application/json','X-Admin-Token':TOKEN}, body: body ? JSON.stringify(body) : undefined});
-  if (r.status === 401){ showLogin(TOKEN ? 'الرمز غير صحيح' : ''); throw new Error('401'); }
-  if (!r.ok){ let m='حدث خطأ'; try{ const j=await r.json(); m = typeof j.detail==='string' ? j.detail : m; }catch(e){} throw new Error(m); }
-  return r.json();
-}
-
-function durLabel(s){
-  if (s % 86400 === 0) return (s/86400) + ' يوم';
-  if (s % 3600 === 0) return (s/3600) + ' ساعة';
-  return Math.round(s/60) + ' دقيقة';
-}
-function when(k){
-  if (k.expires_at == null) return 'يبدأ عند التفعيل (' + durLabel(k.duration) + ')';
-  return new Date(k.expires_at*1000).toLocaleString('en-GB',{dateStyle:'short',timeStyle:'short'});
-}
-
-function render(){
-  const n = s => KEYS.filter(k => k.status === s).length;
-  const tiles = [
-      ['إجمالي الأكواد',KEYS.length,'var(--cy)'],
-      ['أكواد نشطة',n('active'),'var(--ok)'],
-      ['غير مفعّلة',n('unused'),'var(--mut)'],
-      ['منتهية / معطّلة',n('expired')+n('disabled'),'var(--bad)']
-  ];
-  $('#stats').innerHTML = tiles.map(t => `<div class="glass stat" style="--c:${t[2]}"><span>${t[0]}</span><b>${t[1]}</b></div>`).join('');
-
-  const q = $('#q').value.trim().toLowerCase(), f = $('#f').value;
-  const rows = KEYS.filter(k => (!f || k.status===f) && (!q || k.key.toLowerCase().includes(q) || (k.hwid||'').toLowerCase().includes(q)));
-  $('#list').innerHTML = rows.length ? rows.map(k => `
-    <div class="row" data-s="${k.status}" data-k="${esc(k.key)}">
-      <div class="k"><span class="lbl">الكود</span><button class="key-btn mono" data-a="copy" title="نسخ">${esc(k.key)}</button></div>
-      <div><span class="lbl">الحالة</span><span class="pill p-${k.status}">${ST[k.status]}</span></div>
-      <div><span class="lbl">ينتهي في</span><span class="text-sm font-semibold" style="color:var(--mut)">${esc(when(k))}</span></div>
-      <div class="k md:!col-auto"><span class="lbl">الجهاز</span><span class="mono text-sm" style="color:var(--mut)">${esc(k.hwid || '—')}</span></div>
-      <div class="acts">
-        <button class="btn text-sm" data-a="extend">+24 ساعة</button>
-        <button class="btn text-sm" data-a="toggle" style="color:${k.active?'var(--warn)':'var(--ok)'}">${k.active ? 'تعطيل' : 'تفعيل'}</button>
-        <button class="btn bad text-sm" data-a="del">حذف</button>
-      </div>
-    </div>`).join('') : '<p class="p-8 text-center font-bold" style="color:var(--mut)">لا توجد أكواد مطابقة. قم بتوليد أكواد جديدة.</p>';
-}
-
-async function load(){
-  try { KEYS = await api('/api/keys'); $('#login').style.display='none'; render(); }
-  catch(e){ if (e.message !== '401') toast(e.message); }
-}
-
-$('#loginForm').onsubmit = e => {
-  e.preventDefault(); TOKEN = $('#tok').value.trim();
-  try { localStorage.setItem('adm', TOKEN); } catch(x) {}
-  load();
-};
-$('#logout').onclick = () => { TOKEN=''; try{localStorage.removeItem('adm');}catch(e){} showLogin(); };
-$('#refresh').onclick = load;
-$('#q').oninput = $('#f').onchange = render;
-
-$('#chips').onclick = e => {
-  const b = e.target.closest('.chip'); if (!b) return;
-  document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c===b));
-  DUR = b.dataset.s;
-  $('#customBox').classList.toggle('hidden', DUR !== 'custom');
+const showToast = (msg) => {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t.timer);
+    t.timer = setTimeout(() => t.classList.remove('show'), 3000);
 };
 
-$('#gen').onclick = async () => {
-  const secs = DUR === 'custom' ? Math.round(+$('#cVal').value * +$('#cUnit').value) : +DUR;
-  const qty = Math.min(100, Math.max(1, parseInt($('#qty').value) || 1));
-  if (!(secs >= 60)) return toast('المدة يجب أن تكون دقيقة على الأقل');
-  const b = $('#gen'); b.disabled = true;
-  try {
-    const r = await api('/api/generate', 'POST', {duration: secs, quantity: qty});
-    $('#resultTxt').textContent = r.keys.join('\n'); $('#result').classList.remove('hidden');
-    toast('تم توليد ' + r.keys.length + ' كود بنجاح'); await load();
-  } catch(e){ if (e.message !== '401') toast(e.message); }
-  b.disabled = false;
-};
-$('#copyAll').onclick = () => navigator.clipboard.writeText($('#resultTxt').textContent).then(() => toast('تم نسخ الأكواد بنجاح'));
-
-$('#list').onclick = async e => {
-  const b = e.target.closest('button[data-a]'); if (!b) return;
-  const key = b.closest('.row').dataset.k, a = b.dataset.a, u = '/api/key/' + encodeURIComponent(key);
-  try {
-    if (a === 'copy'){ await navigator.clipboard.writeText(key); return toast('تم نسخ الكود'); }
-    if (a === 'del'){ if (!confirm('هل أنت متأكد من حذف هذا الكود نهائياً؟\n' + key)) return; await api(u, 'DELETE'); toast('تم حذف الكود'); }
-    if (a === 'toggle'){ await api(u + '/toggle', 'POST'); toast('تم تغيير حالة الكود'); }
-    if (a === 'extend'){ await api(u + '/extend', 'POST', {seconds: 86400}); toast('تمت إضافة 24 ساعة للكود'); }
-    load();
-  } catch(err){ if (err.message !== '401') toast(err.message); }
+const formatDate = (ts) => {
+    if (!ts) return 'يبدأ عند التفعيل';
+    return new Date(ts * 1000).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' });
 };
 
-TOKEN ? load() : showLogin();
+async function apiCall(endpoint, method = 'GET', body = null) {
+    const headers = { 'X-Admin-Token': localStorage.getItem('dark_vip_token') };
+    if (body) headers['Content-Type'] = 'application/json';
+    
+    const res = await fetch(endpoint, { method, headers, body: body ? JSON.stringify(body) : null });
+    
+    if (res.status === 401) {
+        localStorage.removeItem('dark_vip_token');
+        $('#dashboard').classList.add('hidden');
+        $('#loginScreen').style.display = 'flex';
+        throw new Error('Unauthorized');
+    }
+    
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Server Error');
+    return data;
+}
+
+let currentKeys = [];
+let currentDuration = 3600;
+
+function renderDashboard() {
+    let active = 0, unused = 0, dead = 0;
+    
+    currentKeys.forEach(k => {
+        if (k.status === 'active') active++;
+        else if (k.status === 'unused') unused++;
+        else dead++;
+    });
+
+    $('#statTotal').textContent = currentKeys.length;
+    $('#statActive').textContent = active;
+    $('#statUnused').textContent = unused;
+    $('#statDead').textContent = dead;
+
+    const q = $('#searchInput').value.toLowerCase();
+    const filter = $('#filterInput').value;
+    
+    const filtered = currentKeys.filter(k => {
+        const matchQ = k.key.toLowerCase().includes(q) || (k.hwid || '').toLowerCase().includes(q);
+        const matchF = filter === '' || k.status === filter;
+        return matchQ && matchF;
+    });
+
+    const list = $('#keysList');
+    if (filtered.length === 0) {
+        list.innerHTML = `<div class="p-12 text-center text-gray-500 font-bold">لا توجد أكواد مطابقة.</div>`;
+        return;
+    }
+
+    list.innerHTML = filtered.map(k => `
+        <div class="key-row" data-key="${k.key}">
+            <div>
+                <span class="mobile-label">الكود</span>
+                <button class="mono font-bold text-[var(--neon-cyan)] bg-[rgba(0,242,254,0.1)] px-3 py-1 rounded border border-[rgba(0,242,254,0.3)] hover:bg-[rgba(0,242,254,0.2)] transition action-btn" data-action="copy" title="نسخ">${k.key}</button>
+            </div>
+            <div>
+                <span class="mobile-label">الحالة</span>
+                <span class="badge badge-${k.status}">${
+                    k.status === 'active' ? 'نشط' : 
+                    k.status === 'unused' ? 'غير مفعّل' : 
+                    k.status === 'expired' ? 'منتهي' : 'معطّل'
+                }</span>
+            </div>
+            <div>
+                <span class="mobile-label">ينتهي في</span>
+                <div class="text-sm font-bold text-gray-400">${formatDate(k.expires_at)}</div>
+            </div>
+            <div>
+                <span class="mobile-label">الجهاز (HWID)</span>
+                <div class="mono text-sm text-gray-500 truncate" title="${k.hwid||''}">${k.hwid || '—'}</div>
+            </div>
+            <div class="flex gap-2 justify-start md:justify-end flex-wrap">
+                <button class="btn btn-outline btn-icon text-xs action-btn" data-action="extend">+24 ساعة</button>
+                <button class="btn btn-outline btn-icon text-xs action-btn" data-action="toggle" style="color:${k.active ? 'var(--warning)' : 'var(--success)'}">
+                    ${k.active ? 'تعطيل' : 'تفعيل'}
+                </button>
+                <button class="btn btn-danger btn-icon text-xs action-btn" data-action="delete">حذف</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function loadData() {
+    try {
+        currentKeys = await apiCall('/api/keys');
+        renderDashboard();
+    } catch (e) {
+        if (e.message !== 'Unauthorized') showToast('خطأ: ' + e.message);
+    }
+}
+
+$('#loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const token = $('#tokenInput').value.trim();
+    if (!token) return;
+    
+    localStorage.setItem('dark_vip_token', token);
+    
+    try {
+        $('#loginError').textContent = '';
+        await loadData();
+        $('#loginScreen').style.display = 'none';
+        $('#dashboard').classList.remove('hidden');
+    } catch (err) {
+        $('#loginError').textContent = 'كلمة المرور غير صحيحة!';
+        localStorage.removeItem('dark_vip_token');
+    }
+});
+
+$('#logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('dark_vip_token');
+    location.reload();
+});
+
+$('#refreshBtn').addEventListener('click', () => {
+    loadData();
+    showToast('تم تحديث البيانات 🔄');
+});
+
+$('#chips').addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    
+    currentDuration = chip.dataset.s;
+    const customBox = $('#customInputs');
+    if (currentDuration === 'custom') {
+        customBox.classList.remove('hidden');
+        customBox.classList.add('grid');
+    } else {
+        customBox.classList.add('hidden');
+        customBox.classList.remove('grid');
+    }
+});
+
+$('#searchInput').addEventListener('input', renderDashboard);
+$('#filterInput').addEventListener('change', renderDashboard);
+
+$('#generateBtn').addEventListener('click', async () => {
+    const btn = $('#generateBtn');
+    const qty = parseInt($('#qtyInput').value);
+    
+    let seconds = currentDuration;
+    if (currentDuration === 'custom') {
+        seconds = parseInt($('#cVal').value) * parseInt($('#cUnit').value);
+    } else {
+        seconds = parseInt(currentDuration);
+    }
+
+    if (!seconds || seconds < 60) return showToast('المدة يجب أن تكون دقيقة على الأقل');
+    if (isNaN(qty) || qty < 1 || qty > 100) return showToast('الكمية يجب أن تكون بين 1 و 100');
+
+    btn.disabled = true;
+    btn.innerHTML = 'جاري التوليد... ⏳';
+
+    try {
+        const res = await apiCall('/api/generate', 'POST', { duration: seconds, quantity: qty });
+        $('#resultText').textContent = res.keys.join('\n');
+        $('#resultBox').classList.remove('hidden');
+        showToast(`تم توليد ${res.keys.length} كود بنجاح ✅`);
+        await loadData();
+    } catch (e) {
+        showToast('خطأ: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'توليد الأكواد 🚀';
+    }
+});
+
+$('#copyAllBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText($('#resultText').textContent);
+    showToast('تم نسخ جميع الأكواد 📋');
+});
+
+$('#keysList').addEventListener('click', async (e) => {
+    const btn = e.target.closest('.action-btn');
+    if (!btn) return;
+    
+    const row = btn.closest('.key-row');
+    const key = row.dataset.key;
+    const action = btn.dataset.action;
+    
+    if (action === 'copy') {
+        navigator.clipboard.writeText(key);
+        return showToast('تم نسخ الكود 📋');
+    }
+    
+    btn.disabled = true;
+    try {
+        if (action === 'extend') {
+            await apiCall(`/api/key/${encodeURIComponent(key)}/extend`, 'POST', { seconds: 86400 });
+            showToast('تمت إضافة 24 ساعة ⏱️');
+        } else if (action === 'toggle') {
+            await apiCall(`/api/key/${encodeURIComponent(key)}/toggle`, 'POST');
+            showToast('تم تغيير حالة الكود 🔄');
+        } else if (action === 'delete') {
+            if (!confirm('هل أنت متأكد من حذف هذا الكود نهائياً؟')) {
+                btn.disabled = false;
+                return;
+            }
+            await apiCall(`/api/key/${encodeURIComponent(key)}`, 'DELETE');
+            showToast('تم حذف الكود 🗑️');
+        }
+        await loadData();
+    } catch (err) {
+        showToast('خطأ: ' + err.message);
+    } finally {
+        btn.disabled = false;
+    }
+});
+
+if (localStorage.getItem('dark_vip_token')) {
+    $('#loginScreen').style.display = 'none';
+    $('#dashboard').classList.remove('hidden');
+    loadData();
+} else {
+    $('#tokenInput').focus();
+}
 </script>
 </body>
-      </html>
+</html>
