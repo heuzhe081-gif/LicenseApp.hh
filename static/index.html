@@ -20,233 +20,58 @@
         --warning: #ffb300;
         --danger: #ff1744;
     }
-
     * { box-sizing: border-box; }
-    
-    body {
-        margin: 0;
-        background-color: var(--bg-base);
-        color: var(--text-main);
-        font-family: 'Cairo', sans-serif;
-        min-height: 100vh;
-        overflow-x: hidden;
-    }
-
+    body { margin: 0; background-color: var(--bg-base); color: var(--text-main); font-family: 'Cairo', sans-serif; min-height: 100vh; overflow-x: hidden; }
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
-
-    .bg-glow {
-        position: fixed;
-        inset: 0;
-        z-index: -1;
-        overflow: hidden;
-        background: 
-            radial-gradient(circle at 10% 10%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
-            radial-gradient(circle at 90% 90%, rgba(163, 92, 255, 0.08) 0%, transparent 40%),
-            radial-gradient(circle at 50% 50%, rgba(79, 172, 254, 0.03) 0%, transparent 60%);
-    }
-
-    .glass {
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-    }
-
-    .neon-text {
-        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue), var(--neon-purple));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .input-field {
-        width: 100%;
-        background: rgba(0, 0, 0, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 14px 16px;
-        color: white;
-        font-family: 'Cairo', sans-serif;
-        transition: all 0.3s ease;
-    }
-    .input-field:focus {
-        outline: none;
-        border-color: var(--neon-cyan);
-        box-shadow: 0 0 15px rgba(0, 242, 254, 0.15);
-        background: rgba(0, 0, 0, 0.5);
-    }
-
-    .btn {
-        padding: 12px 24px;
-        border-radius: 12px;
-        font-weight: 800;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-    .btn-primary {
-        background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
-        color: #000;
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
-    }
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0 30px rgba(0, 242, 254, 0.6);
-    }
-    .btn-primary:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-    }
-    .btn-outline {
-        background: transparent;
-        border: 1px solid rgba(255,255,255,0.1);
-        color: var(--text-main);
-    }
-    .btn-outline:hover {
-        background: rgba(255,255,255,0.05);
-        border-color: rgba(255,255,255,0.3);
-    }
-    .btn-danger {
-        background: rgba(255, 23, 68, 0.1);
-        color: var(--danger);
-        border: 1px solid rgba(255, 23, 68, 0.3);
-    }
-    .btn-danger:hover {
-        background: rgba(255, 23, 68, 0.2);
-        border-color: var(--danger);
-    }
-    .btn-icon {
-        padding: 8px;
-        border-radius: 8px;
-        font-size: 14px;
-    }
-
-    .chip {
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.1);
-        color: var(--text-muted);
-        padding: 8px 20px;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-weight: 600;
-    }
-    .chip:hover {
-        background: rgba(255,255,255,0.08);
-    }
-    .chip.active {
-        background: rgba(0, 242, 254, 0.1);
-        border-color: var(--neon-cyan);
-        color: var(--neon-cyan);
-        box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
-    }
-
-    .badge {
-        padding: 4px 12px;
-        border-radius: 50px;
-        font-size: 12px;
-        font-weight: 800;
-        border: 1px solid;
-    }
+    
+    .bg-glow { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: radial-gradient(circle at 10% 10%, rgba(0, 242, 254, 0.08) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(163, 92, 255, 0.08) 0%, transparent 40%); }
+    .glass { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4); }
+    .neon-text { background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    
+    .input-field { width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 14px 16px; color: white; font-family: 'Cairo', sans-serif; transition: all 0.3s ease; }
+    .input-field:focus { outline: none; border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 242, 254, 0.15); background: rgba(0, 0, 0, 0.5); }
+    
+    .btn { padding: 12px 24px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: all 0.3s ease; border: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-primary { background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue)); color: #000; box-shadow: 0 0 20px rgba(0, 242, 254, 0.3); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0, 242, 254, 0.6); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); }
+    .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); }
+    .btn-danger { background: rgba(255, 23, 68, 0.1); color: var(--danger); border: 1px solid rgba(255, 23, 68, 0.3); }
+    .btn-danger:hover { background: rgba(255, 23, 68, 0.2); border-color: var(--danger); }
+    .btn-icon { padding: 8px; border-radius: 8px; font-size: 14px; }
+    
+    .chip { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); padding: 8px 20px; border-radius: 50px; cursor: pointer; transition: all 0.2s ease; font-weight: 600; }
+    .chip:hover { background: rgba(255,255,255,0.08); }
+    .chip.active { background: rgba(0, 242, 254, 0.1); border-color: var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 242, 254, 0.2); }
+    
+    .badge { padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; border: 1px solid; }
     .badge-active { color: var(--success); background: rgba(0, 230, 118, 0.1); border-color: rgba(0, 230, 118, 0.3); }
     .badge-unused { color: var(--text-muted); background: rgba(139, 147, 167, 0.1); border-color: rgba(139, 147, 167, 0.3); }
     .badge-expired { color: var(--warning); background: rgba(255, 179, 0, 0.1); border-color: rgba(255, 179, 0, 0.3); }
     .badge-disabled { color: var(--danger); background: rgba(255, 23, 68, 0.1); border-color: rgba(255, 23, 68, 0.3); }
-
-    .table-header {
-        display: none;
-        grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1.5fr;
-        padding: 16px 24px;
-        background: rgba(0,0,0,0.2);
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-        color: var(--text-muted);
-        font-weight: 800;
-        font-size: 14px;
-        border-radius: 24px 24px 0 0;
-    }
-    .key-row {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 16px;
-        padding: 24px;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-        transition: background 0.2s ease;
-        align-items: center;
-    }
-    .key-row:hover {
-        background: rgba(255,255,255,0.02);
-    }
-    .key-row:last-child {
-        border-bottom: none;
-        border-radius: 0 0 24px 24px;
-    }
     
+    .table-header { display: none; grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1.5fr; padding: 16px 24px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-weight: 800; font-size: 14px; border-radius: 24px 24px 0 0; }
+    .key-row { display: grid; grid-template-columns: 1fr; gap: 16px; padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s ease; align-items: center; }
+    .key-row:hover { background: rgba(255,255,255,0.02); }
+    .key-row:last-child { border-bottom: none; border-radius: 0 0 24px 24px; }
     @media (min-width: 768px) {
         .table-header { display: grid; }
         .key-row { grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1.5fr; }
         .mobile-label { display: none !important; }
     }
-
-    .mobile-label {
-        display: block;
-        font-size: 12px;
-        color: var(--text-muted);
-        font-weight: 700;
-        margin-bottom: 4px;
-    }
-
-    .mono {
-        font-family: 'JetBrains Mono', monospace;
-        direction: ltr;
-        unicode-bidi: embed;
-    }
-
+    .mobile-label { display: block; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+    .mono { font-family: 'JetBrains Mono', monospace; direction: ltr; unicode-bidi: embed; }
+    
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .animate-fade { animation: fadeIn 0.4s ease forwards; }
-
-    #toast {
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%) translateY(20px);
-        background: rgba(18, 20, 30, 0.9);
-        border: 1px solid var(--neon-cyan);
-        color: var(--neon-cyan);
-        padding: 12px 24px;
-        border-radius: 50px;
-        font-weight: 800;
-        backdrop-filter: blur(10px);
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        z-index: 9999;
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
-    }
-    #toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-
-    #loginScreen {
-        position: fixed;
-        inset: 0;
-        z-index: 9000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg-base);
-        padding: 20px;
-    }
+    
+    #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(18, 20, 30, 0.9); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 12px 24px; border-radius: 50px; font-weight: 800; backdrop-filter: blur(10px); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 9999; box-shadow: 0 0 20px rgba(0, 242, 254, 0.2); }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #loginScreen { position: fixed; inset: 0; z-index: 9000; display: flex; align-items: center; justify-content: center; background: var(--bg-base); padding: 20px; }
 </style>
 </head>
 <body>
@@ -258,12 +83,10 @@
 <div id="loginScreen">
     <div class="glass p-8 md:p-12 w-full max-w-md relative overflow-hidden animate-fade text-center">
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));"></div>
-        
         <div class="mb-10">
             <h1 class="text-4xl font-black neon-text mb-2 tracking-widest">DARK VIP</h1>
             <p class="text-sm font-bold" style="color: var(--text-muted)">لوحة التحكم المركزية</p>
         </div>
-
         <form id="loginForm" class="space-y-6">
             <div class="relative">
                 <input type="password" id="tokenInput" class="input-field mono text-center text-lg" placeholder="أدخل كلمة المرور (Token)" required autocomplete="current-password">
@@ -271,16 +94,11 @@
             <p id="loginError" class="text-sm font-bold text-red-500 h-4"></p>
             <button type="submit" class="btn btn-primary w-full text-lg">دخول آمن 🚀</button>
         </form>
-        
-        <div class="mt-8 text-xs font-bold" style="color: var(--text-muted)">
-            Powered by Ayoub VIP System
-        </div>
     </div>
 </div>
 
 <!-- Dashboard -->
 <main id="dashboard" class="max-w-6xl mx-auto p-4 md:p-8 hidden animate-fade">
-    
     <header class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
         <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-full glass flex items-center justify-center text-2xl">👑</div>
@@ -322,7 +140,6 @@
 
     <div class="glass p-6 md:p-8 mb-8">
         <h2 class="text-xl font-black mb-6 flex items-center gap-2"><span>✨</span> توليد أكواد جديدة</h2>
-        
         <div class="flex flex-wrap gap-3 mb-6" id="chips">
             <button class="chip active" data-s="3600">ساعة ⏱️</button>
             <button class="chip" data-s="10800">3 ساعات ⏱️</button>
@@ -330,7 +147,6 @@
             <button class="chip" data-s="604800">أسبوع 📆</button>
             <button class="chip" data-s="custom">مخصص ⚙️</button>
         </div>
-
         <div id="customInputs" class="hidden grid grid-cols-2 gap-4 max-w-sm mb-6">
             <div>
                 <label class="block text-xs font-bold mb-1" style="color:var(--text-muted)">المدة</label>
@@ -345,7 +161,6 @@
                 </select>
             </div>
         </div>
-
         <div class="flex flex-col md:flex-row items-end gap-4">
             <div class="w-full md:w-48">
                 <label class="block text-xs font-bold mb-1" style="color:var(--text-muted)">الكمية (1-100)</label>
@@ -354,10 +169,13 @@
             <button class="btn btn-primary flex-1 w-full text-lg py-4" id="generateBtn">توليد الأكواد 🚀</button>
         </div>
 
-        <div id="resultBox" class="hidden mt-6 p-4 rounded-xl border border-[var(--neon-cyan)] bg-[rgba(0,242,254,0.05)]">
+        <div id="resultBox" class="hidden mt-6 p-4 rounded-xl border border-[var(--neon-cyan)] bg-[rgba(0,242,254,0.05)] animate-fade">
             <div class="flex justify-between items-center mb-3">
                 <h4 class="text-sm font-bold text-[var(--neon-cyan)]">الأكواد الجديدة جاهزة</h4>
-                <button class="btn btn-outline text-xs" id="copyAllBtn">📋 نسخ الكل</button>
+                <div class="flex gap-2">
+                    <button class="btn btn-outline text-xs" id="copyAllBtn">📋 نسخ الكل</button>
+                    <button class="btn btn-danger text-xs px-3" id="closeResultBtn">✖</button>
+                </div>
             </div>
             <pre id="resultText" class="mono text-sm text-center text-[var(--neon-cyan)] bg-black/40 p-4 rounded-lg overflow-auto max-h-48 whitespace-pre-wrap"></pre>
         </div>
@@ -374,7 +192,6 @@
                 <option value="disabled">معطّل</option>
             </select>
         </div>
-        
         <div class="table-header">
             <div>الكود</div>
             <div>الحالة</div>
@@ -382,15 +199,11 @@
             <div>الجهاز (HWID)</div>
             <div class="text-left">التحكم</div>
         </div>
-        
         <div id="keysList"></div>
     </div>
-
 </main>
-
 <script>
 const $ = s => document.querySelector(s);
-
 const showToast = (msg) => {
     const t = $('#toast');
     t.textContent = msg;
@@ -407,16 +220,13 @@ const formatDate = (ts) => {
 async function apiCall(endpoint, method = 'GET', body = null) {
     const headers = { 'X-Admin-Token': localStorage.getItem('dark_vip_token') };
     if (body) headers['Content-Type'] = 'application/json';
-    
     const res = await fetch(endpoint, { method, headers, body: body ? JSON.stringify(body) : null });
-    
     if (res.status === 401) {
         localStorage.removeItem('dark_vip_token');
         $('#dashboard').classList.add('hidden');
         $('#loginScreen').style.display = 'flex';
         throw new Error('Unauthorized');
     }
-    
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Server Error');
     return data;
@@ -427,13 +237,11 @@ let currentDuration = 3600;
 
 function renderDashboard() {
     let active = 0, unused = 0, dead = 0;
-    
     currentKeys.forEach(k => {
         if (k.status === 'active') active++;
         else if (k.status === 'unused') unused++;
         else dead++;
     });
-
     $('#statTotal').textContent = currentKeys.length;
     $('#statActive').textContent = active;
     $('#statUnused').textContent = unused;
@@ -441,7 +249,6 @@ function renderDashboard() {
 
     const q = $('#searchInput').value.toLowerCase();
     const filter = $('#filterInput').value;
-    
     const filtered = currentKeys.filter(k => {
         const matchQ = k.key.toLowerCase().includes(q) || (k.hwid || '').toLowerCase().includes(q);
         const matchF = filter === '' || k.status === filter;
@@ -500,9 +307,7 @@ $('#loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const token = $('#tokenInput').value.trim();
     if (!token) return;
-    
     localStorage.setItem('dark_vip_token', token);
-    
     try {
         $('#loginError').textContent = '';
         await loadData();
@@ -527,10 +332,8 @@ $('#refreshBtn').addEventListener('click', () => {
 $('#chips').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
     if (!chip) return;
-    
     document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
-    
     currentDuration = chip.dataset.s;
     const customBox = $('#customInputs');
     if (currentDuration === 'custom') {
@@ -548,20 +351,17 @@ $('#filterInput').addEventListener('change', renderDashboard);
 $('#generateBtn').addEventListener('click', async () => {
     const btn = $('#generateBtn');
     const qty = parseInt($('#qtyInput').value);
-    
     let seconds = currentDuration;
     if (currentDuration === 'custom') {
         seconds = parseInt($('#cVal').value) * parseInt($('#cUnit').value);
     } else {
         seconds = parseInt(currentDuration);
     }
-
     if (!seconds || seconds < 60) return showToast('المدة يجب أن تكون دقيقة على الأقل');
     if (isNaN(qty) || qty < 1 || qty > 100) return showToast('الكمية يجب أن تكون بين 1 و 100');
 
     btn.disabled = true;
     btn.innerHTML = 'جاري التوليد... ⏳';
-
     try {
         const res = await apiCall('/api/generate', 'POST', { duration: seconds, quantity: qty });
         $('#resultText').textContent = res.keys.join('\n');
@@ -581,19 +381,21 @@ $('#copyAllBtn').addEventListener('click', () => {
     showToast('تم نسخ جميع الأكواد 📋');
 });
 
+// زر إغلاق صندوق الأكواد
+$('#closeResultBtn').addEventListener('click', () => {
+    $('#resultBox').classList.add('hidden');
+});
+
 $('#keysList').addEventListener('click', async (e) => {
     const btn = e.target.closest('.action-btn');
     if (!btn) return;
-    
     const row = btn.closest('.key-row');
     const key = row.dataset.key;
     const action = btn.dataset.action;
-    
     if (action === 'copy') {
         navigator.clipboard.writeText(key);
         return showToast('تم نسخ الكود 📋');
     }
-    
     btn.disabled = true;
     try {
         if (action === 'extend') {
@@ -609,6 +411,8 @@ $('#keysList').addEventListener('click', async (e) => {
             }
             await apiCall(`/api/key/${encodeURIComponent(key)}`, 'DELETE');
             showToast('تم حذف الكود 🗑️');
+            // إخفاء صندوق الأكواد عند الحذف
+            $('#resultBox').classList.add('hidden');
         }
         await loadData();
     } catch (err) {
