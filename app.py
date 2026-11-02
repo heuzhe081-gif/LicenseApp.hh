@@ -210,7 +210,7 @@ const API = '/api';
 async function apiCall(endpoint, method='GET', body=null) {
     const headers = { 'X-Admin-Token': TOKEN };
     if(body) headers['Content-Type'] = 'application/json';
-    const res = await fetch(endpoint, { method, headers, body: body ? JSON.stringify(body) : null });
+    const res = await fetch('/api' + endpoint, { method, headers, body: body ? JSON.stringify(body) : null });
     if(res.status === 401) { alert('Access Denied'); location.reload(); }
     if(!res.ok) throw new Error('API Error');
     return res.json();
