@@ -9,14 +9,13 @@ from pydantic import BaseModel, Field
 
 app = FastAPI(title="ROZIXXIT SERVER")
 DATABASE_URL = os.getenv("DATABASE_URL", "")
-ADMIN_TOKEN = "123"
+ADMIN_TOKEN = "AYOUBTNS334455"
 
 @contextmanager
 def conn():
     with psycopg.connect(DATABASE_URL, row_factory=dict_row, prepare_threshold=None) as c:
         yield c
 
-# إنشاء الجدول مع دعم تعدد الأجهزة
 with conn() as c:
     c.execute("""CREATE TABLE IF NOT EXISTS rozi_keys(
         key TEXT PRIMARY KEY,
@@ -36,7 +35,6 @@ def status_of(r, now):
     if r["expires_at"] is None: return "unused"
     return "expired" if r["expires_at"] <= now else "active"
 
-# ================= API =================
 class Gen(BaseModel):
     duration: int = Field(ge=60)
     quantity: int = Field(ge=1, le=100)
@@ -50,7 +48,6 @@ def generate(b: Gen):
     now = int(time.time())
     a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
     keys = [f"ROZIX-{''.join(secrets.choice(a) for _ in range(3))}-{''.join(secrets.choice(a) for _ in range(3))}-{''.join(secrets.choice(a) for _ in range(3))}" for _ in range(b.quantity)]
-    
     with conn() as c:
         c.cursor().executemany(
             "INSERT INTO rozi_keys(key,duration,active,created_at,max_devices) VALUES(%s,%s,TRUE,%s,%s)",
@@ -100,25 +97,20 @@ def validate(b: Validate):
     with conn() as c:
         r = c.execute("SELECT * FROM rozi_keys WHERE key=%s", (b.key.strip().upper(),)).fetchone()
         if not r or not r["active"]: return {"valid": False, "reason": "invalid"}
-        
-        # منطق تعدد الأجهزة
         current_hwids = r["hwid"].split(",") if r["hwid"] else []
         if b.hwid not in current_hwids:
             if len(current_hwids) >= r["max_devices"]:
                 return {"valid": False, "reason": "device_limit_reached"}
             current_hwids.append(b.hwid)
             c.execute("UPDATE rozi_keys SET hwid=%s WHERE key=%s", (",".join(current_hwids), r["key"]))
-            
         exp = r["expires_at"]
         if exp is None:
             exp = now + r["duration"]
             c.execute("UPDATE rozi_keys SET expires_at=%s WHERE key=%s", (exp, r["key"]))
         elif exp <= now:
             return {"valid": False, "reason": "expired"}
-            
     return {"valid": True, "expires_at": exp}
 
-# ================= واجهة الموقع الفخمة =================
 HTML = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -131,27 +123,19 @@ HTML = """
     :root { --main: #a855f7; --sec: #06b6d4; --bg: #09090b; }
     body { background-color: var(--bg); color: #fff; font-family: 'Cairo', sans-serif; overflow-x: hidden; min-height: 100vh; }
     .mono { font-family: 'JetBrains Mono', monospace; direction: ltr; }
-    
-    /* خلفية متحركة */
     .bg-blobs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
     .blob-1 { position: absolute; top: -10%; left: -10%; width: 40vw; height: 40vw; background: var(--main); border-radius: 50%; filter: blur(100px); opacity: 0.2; animation: float 10s infinite alternate; }
     .blob-2 { position: absolute; bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: var(--sec); border-radius: 50%; filter: blur(100px); opacity: 0.2; animation: float 10s infinite alternate-reverse; }
     @keyframes float { 0% { transform: translate(0, 0); } 100% { transform: translate(50px, 50px); } }
-
     .glass { background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .btn { background: linear-gradient(135deg, var(--main), var(--sec)); color: #000; font-weight: 900; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; transition: 0.3s; }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(168,85,247,0.5); }
     .inp { background: rgba(0,0,0,0.5); border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; width: 100%; transition: 0.3s; }
     .inp:focus { outline: none; border-color: var(--main); box-shadow: 0 0 10px rgba(168,85,247,0.3); }
-    
     .key-card { background: rgba(0,0,0,0.4); border: 1px solid #222; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; transition: 0.3s; }
     .key-card:hover { border-color: var(--sec); box-shadow: 0 0 15px rgba(6,182,212,0.2); }
     .key-text { font-size: 1.25rem; font-weight: 900; color: var(--sec); text-shadow: 0 0 5px rgba(6,182,212,0.5); letter-spacing: 1px; }
-    
-    /* إخفاء و إظهار */
     .hidden { display: none !important; }
-    
-    /* شريط تمرير مخصص */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--main); border-radius: 4px; }
@@ -160,7 +144,6 @@ HTML = """
 <body>
 <div class="bg-blobs"><div class="blob-1"></div><div class="blob-2"></div></div>
 
-<!-- Login Screen -->
 <div id="loginScreen" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
     <div class="glass p-8 w-full max-w-sm text-center">
         <h1 class="text-4xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500">ROZIXXIT</h1>
@@ -170,14 +153,12 @@ HTML = """
     </div>
 </div>
 
-<!-- Dashboard -->
 <div id="dashboard" class="hidden max-w-4xl mx-auto p-4 md:p-8">
     <header class="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
         <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-cyan-500">ROZIXXIT PANEL</h1>
         <button onclick="location.reload()" class="text-red-500 hover:text-white transition">خروج 🚪</button>
     </header>
 
-    <!-- Generator -->
     <div class="glass p-6 mb-8">
         <h2 class="text-xl font-bold mb-4 text-purple-400">✨ توليد الأكواد</h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -216,7 +197,6 @@ HTML = """
         <button onclick="generate()" id="genBtn" class="btn w-full mt-4 text-lg">توليد الأكواد 🚀</button>
     </div>
 
-    <!-- Keys List -->
     <div class="glass p-6">
         <h2 class="text-xl font-bold mb-4 text-cyan-400">📦 الأكواد المخزنة</h2>
         <div id="keysList" class="space-y-3"></div>
@@ -224,14 +204,14 @@ HTML = """
 </div>
 
 <script>
-let TOKEN = localStorage.getItem('rozi_token') || '';
+let TOKEN = '';
 const API = '/api';
 
 async function apiCall(endpoint, method='GET', body=null) {
     const headers = { 'X-Admin-Token': TOKEN };
     if(body) headers['Content-Type'] = 'application/json';
     const res = await fetch(endpoint, { method, headers, body: body ? JSON.stringify(body) : null });
-    if(res.status === 401) { localStorage.removeItem('rozi_token'); location.reload(); }
+    if(res.status === 401) { alert('Access Denied'); location.reload(); }
     if(!res.ok) throw new Error('API Error');
     return res.json();
 }
@@ -249,7 +229,6 @@ async function login() {
     TOKEN = token;
     try {
         await apiCall('/keys');
-        localStorage.setItem('rozi_token', token);
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('dashboard').classList.remove('hidden');
         loadKeys();
@@ -275,7 +254,6 @@ async function generate() {
     btn.disabled = true; btn.innerText = 'جاري التوليد... ⏳';
     try {
         const res = await apiCall('/generate', 'POST', { duration, quantity: qty, max_devices: max_dev });
-        // نسخ الأكواد فوراً للحافظة
         navigator.clipboard.writeText(res.keys.join('\\n'));
         alert(`✅ تم توليد ${qty} كود ونسخهم للحافظة تلقائياً!`);
         loadKeys();
@@ -287,12 +265,10 @@ async function loadKeys() {
     const keys = await apiCall('/keys');
     const list = document.getElementById('keysList');
     if(keys.length === 0) { list.innerHTML = '<p class="text-gray-500 text-center">لا توجد أكواد حالياً.</p>'; return; }
-    
     list.innerHTML = keys.map(k => {
         let statusColor = k.status === 'active' ? 'text-green-400' : (k.status === 'unused' ? 'text-gray-400' : 'text-red-400');
         let statusText = k.status === 'active' ? 'نشط' : (k.status === 'unused' ? 'غير مفعل' : 'منتهي');
         let deviceText = k.max_devices === 1 ? 'جهاز 1' : 'جهازين';
-        
         return `
         <div class="key-card">
             <div class="flex justify-between items-center flex-wrap gap-2">
