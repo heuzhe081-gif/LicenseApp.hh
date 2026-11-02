@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 app = FastAPI(title="ROZIXXIT SERVER")
 DATABASE_URL = os.getenv("DATABASE_URL", "")
-ADMIN_TOKEN = "AYOUBTNS334455"
+ADMIN_TOKEN = "123"
 
 @contextmanager
 def conn():
